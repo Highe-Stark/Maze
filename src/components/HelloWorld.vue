@@ -1,8 +1,7 @@
 <template>
-  <div class="maze">
+  <div id="maze">
     <h1>{{ msg }}</h1>
-    <canvas id="board" height="800px" width="800px" style="border:2px solid #42b983"></canvas>
-    </br>
+    <canvas id="board" height="480px" width="480px" style="border:2px solid #42b983" class="canvas"></canvas>
     </br>
     <span>
       <p id="au">{{ bottom }} </p>
@@ -13,6 +12,7 @@
   </div>
 </template>
 
+<!-- script for drawing maze -->
 <script>
 export default {
   name: 'Maze',
@@ -22,10 +22,24 @@ export default {
       bottom: '------ Made By Higher Stark ------- ',
       powered: 'Powered By '
     }
+  },
+  mounted () {
+    var c = document.querySelector('canvas')
+    var cxt = c.getContext('2d')
+    cxt.translate(0.5, 0.5)
+    cxt.strokeStyle = '#42b983'
+
+    for (let i = 0; i < c.height; i += 20) {
+      cxt.moveTo(i, 0)
+      cxt.lineTo(i, c.width)
+      cxt.moveTo(0, i)
+      cxt.lineTo(c.height, i)
+    }
+
+    cxt.stroke()
   }
 }
 </script>
-
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
