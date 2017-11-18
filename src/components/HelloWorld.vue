@@ -29,119 +29,86 @@ export default {
     cxt.translate(0.5, 0.5)
     cxt.strokeStyle = '#42b983'
 
-    /* var root = {
-      x: 0,
-      y: 0,
-      parent: null,
-      children: []
-    } */
-
     var Node = {
       new: function (_x, _y, _parent = null) {
-        var node = {}
-        node.x = _x
-        node.y = _y
-        node.parent = _parent
-        node.children = []
-        node.neighbor = function () {
-          let ret = []
-          // if node is on the left border
-          if (node.x === 0) {
-            /* let subdot = {
-              x: node.x + 1,
-              y: node.y,
-              parent: null,
-              children: []
-            } */
-            let subdot = Node.new(node.x + 1, node.y)
-            ret.push(subdot)
-            // on left top corner
-            if (node.y === 0) {
-              subdot.x = 0
-              subdot.y = 1
-              ret.push(subdot)
-            } else if (node.y === c.width / 20 - 1) {
-              // on left bottom corner
-
-              subdot.x = 0
-              subdot.y = node.y - 1
-              ret.push(subdot)
-            } else {
-              // on left border, not corner
-
-              subdot.x = node.x
-              subdot.y = node.y + 1
-              ret.push(subdot)
-              subdot.y = node.y - 1
-              ret.push(subdot)
-            }
-          } else if (node.x === c.height / 20 - 1) {
-            // on the right border
-
-            /* let subdot = {
-              x: node.x - 1,
-              y: node.y,
-              parent: null,
-              children: []
-            } */
-            let subdot = Node.new(node.x - 1, node.y)
-            ret.push(subdot)
-            // on the right top corner
-            if (node.y === 0) {
-              subdot.x = node.x
-              subdot.y = node.y + 1
-              ret.push(subdot)
-            } else if (node.y === c.width / 20 - 1) {
-              // on the right bottom corner
-
-              subdot.x = node.x
-              subdot.y = node.y - 1
-              ret.push(subdot)
-            } else {
-              // on the right border, not corner
-
-              subdot.x = node.x
-              subdot.y = node.y - 1
-              ret.push(subdot)
-              subdot.y = node.y + 1
-              ret.push(subdot)
-            }
-          } else {
-            // neither on left nor right border
-
-            /* let subdot = {
-              x: node.x - 1,
-              y: node.y,
-              parent: null,
-              children: []
-            } */
-            let subdot = Node.new(node.x - 1, node.y)
-            ret.push(subdot)
-            subdot.x = node.x + 1
-            ret.push(subdot)
-            // on top border
-            if (node.y === 0) {
-              subdot.x = node.x
-              subdot.y = node.y + 1
-              ret.push(subdot)
-            } else if (node.y === c.width / 20 - 1) {
-              // on bottom border
-
-              subdot.x = node.x
-              subdot.y = node.y - 1
-              ret.push(subdot)
-            } else {
-              // at central part
-
-              subdot.x = node.x
-              subdot.y = node.y - 1
-              ret.push(subdot)
-              subdot.y = node.y + 1
+        let node = {
+          x: _x,
+          y: _y,
+          parent: _parent,
+          children: [],
+          neighbor: function () {
+            // if node is on the left border
+            if (node.x === 0) {
+              let subdot = Node.new(node.x + 1, node.y)
               node.children.push(subdot)
+              // on left top corner
+              if (node.y === 0) {
+                subdot.x = 0
+                subdot.y = 1
+                node.children.push(subdot)
+              } else if (node.y === c.width / 20 - 1) {
+                // on left bottom corner
+                subdot.x = 0
+                subdot.y = node.y - 1
+                node.children.push(subdot)
+              } else {
+                // on left border, not corner
+                subdot.x = node.x
+                subdot.y = node.y + 1
+                node.children.push(subdot)
+                subdot.y = node.y - 1
+                node.childrenpush(subdot)
+              }
+            } else if (node.x === c.height / 20 - 1) {
+              // on the right border
+              let subdot = Node.new(node.x - 1, node.y)
+              node.children.push(subdot)
+              // on the right top corner
+              if (node.y === 0) {
+                subdot.x = node.x
+                subdot.y = node.y + 1
+                node.children.push(subdot)
+              } else if (node.y === c.width / 20 - 1) {
+                // on the right bottom corner
+                subdot.x = node.x
+                subdot.y = node.y - 1
+                node.children.push(subdot)
+              } else {
+                // on the right border, not corner
+                subdot.x = node.x
+                subdot.y = node.y - 1
+                node.children.push(subdot)
+                subdot.y = node.y + 1
+                node.children.push(subdot)
+              }
+            } else {
+              // neither on left nor right border
+              let subdot = Node.new(node.x - 1, node.y)
+              node.children.push(subdot)
+              subdot.x = node.x + 1
+              node.children.push(subdot)
+              // on top border
+              if (node.y === 0) {
+                subdot.x = node.x
+                subdot.y = node.y + 1
+                node.children.push(subdot)
+              } else if (node.y === c.width / 20 - 1) {
+                // on bottom border
+                subdot.x = node.x
+                subdot.y = node.y - 1
+                node.children.push(subdot)
+              } else {
+                // at central part
+                subdot.x = node.x
+                subdot.y = node.y - 1
+                node.children.push(subdot)
+                subdot.y = node.y + 1
+                node.children.push(subdot)
+              }
             }
           }
-          return ret
         }
+
         return node
       }
     }
@@ -155,7 +122,10 @@ export default {
     while (paths.length !== 0) {
       stack = paths.pop()
       let node = stack[stack.length - 1]
-      node.children = node.neighbor
+
+      console.log(node, node.x, node.y, node.parent)
+
+      node.children = node.neighbor(node)
       if (node.children.length === 0) Error('node children is empty')
       let sub = []
       for (let nei = 0; nei < node.children.length;) {
@@ -166,6 +136,9 @@ export default {
         node.children[nei].parent = node
         sub.push(node.children[nei++])
       }
+
+      console.log(node.children.length)
+
       while (sub.length !== 0) {
         let path = stack
         let idx = Math.random() % sub.length
@@ -197,11 +170,11 @@ export default {
         cxt.moveTo(20 * curr.x, 20 * curr.y)
         cxt.lineTo(20 * curr.x, 20 * curr.y + 20)
       }
-      if (walls.has(-1)) {
+      if (walls.has(-1) && !(curr.x === 0 && curr.y === 0)) {
         cxt.moveTo(20 * curr.x, 20 * curr.y)
         cxt.lineTo(20 * curr.x + 20, 20 * curr.y)
       }
-      if (walls.has(1)) {
+      if (walls.has(1) && !(curr.x === 0 && curr.y === 0)) {
         cxt.moveTo(20 * curr.x + 20, 20 * curr.y + 20)
         cxt.lineTo(20 * curr.x, 20 * curr.y + 20)
       }
@@ -212,111 +185,6 @@ export default {
     }
 
     cxt.stroke()
-
-    /* function neighbor (dot) {
-      if (typeof dot === 'undefined' || typeof dot.x === 'undefined') {
-        dot = {
-          x: 0,
-          y: 0,
-          parent: null,
-          children: []
-        }
-      }
-      let ret = []
-      // if dot is on the left border
-      if (dot.x === 0) {
-        let subdot = {
-          x: dot.x + 1,
-          y: dot.y,
-          parent: null,
-          children: []
-        }
-        ret.push(subdot)
-        // on left top corner
-        if (dot.y === 0) {
-          subdot.x = 0
-          subdot.y = 1
-          ret.push(subdot)
-        } else if (dot.y === c.width / 20 - 1) {
-          // on left bottom corner
-
-          subdot.x = 0
-          subdot.y = dot.y - 1
-          ret.push(subdot)
-        } else {
-          // on left border, not corner
-
-          subdot.x = dot.x
-          subdot.y = dot.y + 1
-          ret.push(subdot)
-          subdot.y = dot.y - 1
-          ret.push(subdot)
-        }
-      } else if (dot.x === c.height / 20 - 1) {
-        // on the right border
-
-        let subdot = {
-          x: dot.x - 1,
-          y: dot.y,
-          parent: null,
-          children: []
-        }
-        ret.push(subdot)
-        // on the right top corner
-        if (dot.y === 0) {
-          subdot.x = dot.x
-          subdot.y = dot.y + 1
-          ret.push(subdot)
-        } else if (dot.y === c.width / 20 - 1) {
-          // on the right bottom corner
-
-          subdot.x = dot.x
-          subdot.y = dot.y - 1
-          ret.push(subdot)
-        } else {
-          // on the right border, not corner
-
-          subdot.x = dot.x
-          subdot.y = dot.y - 1
-          ret.push(subdot)
-          subdot.y = dot.y + 1
-          ret.push(subdot)
-        }
-      } else {
-        // neither on left nor right border
-
-        let subdot = {
-          x: dot.x - 1,
-          y: dot.y,
-          parent: null,
-          children: []
-        }
-        ret.push(subdot)
-        subdot.x = dot.x + 1
-        ret.push(subdot)
-        // on top border
-        if (dot.y === 0) {
-          subdot.x = dot.x
-          subdot.y = dot.y + 1
-          ret.push(subdot)
-        } else if (dot.y === c.width / 20 - 1) {
-          // on bottom border
-
-          subdot.x = dot.x
-          subdot.y = dot.y - 1
-          ret.push(subdot)
-        } else {
-          // at central part
-
-          subdot.x = dot.x
-          subdot.y = dot.y - 1
-          ret.push(subdot)
-          subdot.y = dot.y + 1
-          dot.children.push(subdot)
-        }
-      }
-      return ret
-    } */
   }
 }
 </script>
