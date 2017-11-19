@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Maze from './components/HelloWorld'
+import Maze from './components/Maze'
 
 export default {
   name: 'app',
