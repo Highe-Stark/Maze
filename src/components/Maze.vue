@@ -1,24 +1,48 @@
 <template>
   <div id="maze">
-    <h1 class="text-primary">Welcome to play maze</h1>
-    <button class="btn" v-on:click="reload">Refresh</button>
+    <h1 class="text-primary">{{msg}}</h1>
+    <input id="mazeSize" class="form-control-plaintext" type="number" value=2>mazeSize</input>
+    <button type="submit" v-on:click="update" class="btn btn-primary">{{draw}}</button>
+    <button class="btn btn-primary" v-on:click="reload">{{btn}}</button>
     </br>
-    <canvas class="canvas" id="mazeboard" height="500px" width="500px" style="border:2px solid #f0f0f0">Maze</canvas>
+    <canvas class="canvas" id="mazeboard" height="500px" width="500px" style="border:2px solid #42b983">Maze</canvas>
+    <p>
+      <span id="routes"></span>
+    </p>
   </div>
 </template>
 
 <script>
 export default {
   name: 'Maze',
+  created () {
+    this.msg = 'Welcome to play maze'
+    this.btn = 'Refresh'
+    this.route = 'Empty'
+    this.draw = 'Draw Maze'
+  },
   mounted () {
     var c = document.querySelector('canvas')
     var cxt = c.getContext('2d')
     cxt.strokeStyle = '#42b983'
     cxt.translate(0.5, 0.5)
     var l = 20
-    var size = 10
+    var size = document.getElementById('mazeSize').value
     var maze = genMaze(size)
-    console.log(maze)
+
+    /* var routeStr = ''
+    for (let i = 0; i !== maze.length; ++i) {
+      for (let j = 0; j !== maze[i].length; ++j) {
+        routeStr += JSON.stringify(maze[i][j].parent) + ' --> '
+        routeStr += '( ' + i + ', ' + j + ' )->'
+        for (let k of maze[i][j].children) {
+          routeStr += JSON.stringify(k) + '&nbsp &nbsp'
+        }
+        routeStr += '  </br>'
+      }
+    }
+    document.getElementById('routes').innerHTML = routeStr */
+
     drawMaze(maze, l)
     cxt.stroke()
 
@@ -53,16 +77,14 @@ export default {
           }
           if (!flag) {
             maze[currNode.x][currNode.y].children.push(i)
-            maze[i.x][i.y].parent = currNode
+            maze[i.x][i.y].parent = Object.assign({}, currNode)
           }
         }
-        let adjcnt = maze[currNode.x][currNode.y].children
+        let adjcnt = Object.assign([], maze[currNode.x][currNode.y].children)
         while (adjcnt.length !== 0) {
           let idx = Math.round(Math.random() * Math.exp(5)) % adjcnt.length
-          // alert(idx)
           let copy = path
           copy.push(adjcnt[idx])
-          console.log(adjcnt[idx])
           stack.push(copy)
           visited.add(adjcnt[idx])
           adjcnt.splice(idx, 1)
@@ -72,35 +94,29 @@ export default {
     }
 
     function drawMaze (maze, l) {
-      // var c = document.querySelector('canvas')
-      // var cxt = c.getContext('2d')
       for (let i = 0; i !== maze.length; i++) {
         for (let j = 0; j !== maze[i].length; j++) {
           let cell = genWall(maze, i, j)
           for (let wall of cell) {
             switch (wall) {
               case -2:
-                cxt.moveTo(l * i, l * j)
-                cxt.lineTo(l * i, l * (j + 1))
-                console.log('draw top border', '(', l * i, l * j, ')', '(', l * i, l * (j + 1), ')')
+                cxt.moveTo(l * j, l * i)
+                cxt.lineTo(l * (j + 1), l * i)
                 cxt.stroke()
                 break
               case -1:
-                cxt.moveTo(l * i, l * j)
-                cxt.lineTo(l * (i + 1), l * j)
-                console.log('draw left border', '(', l * i, l * j, ')', '(', l * (i + 1), l * j, ')')
-                cxt.stroke()
-                break
-              case 1:
-                cxt.moveTo(l * (i + 1), l * (j + 1))
-                cxt.lineTo(l * i, l * (j + 1))
-                console.log('draw right border', '(', l * (i + 1), l * (j + 1), ')', '(', l * i, l * (j + 1), ')')
+                cxt.moveTo(l * j, l * i)
+                cxt.lineTo(l * j, l * (i + 1))
                 cxt.stroke()
                 break
               case 2:
-                cxt.moveTo(l * (i + 1), l * (j + 1))
-                cxt.lineTo(l * (i + 1), l * j)
-                console.log('draw bottom border', '(', l * (i + 1), l * (j + 1), ')', '(', l * (i + 1), l * j, ')')
+                cxt.moveTo(l * (j + 1), l * (i + 1))
+                cxt.lineTo(l * j, l * (i + 1))
+                cxt.stroke()
+                break
+              case 1:
+                cxt.moveTo(l * (j + 1), l * (i + 1))
+                cxt.lineTo(l * (j + 1), l * i)
                 cxt.stroke()
             }
           }
@@ -110,19 +126,25 @@ export default {
 
     function genWall (maze, i, j) {
       let walls = new Set()
-      walls.add(-2, -1, 1, 2)
+      walls.add(-2)
+      walls.add(-1)
+      walls.add(1)
+      walls.add(2)
       if (maze[i][j].parent !== null) {
         let prt = maze[i][j].parent
-        let diff = prt.x - i + 2 * (prt.y - j)
+        let diff = 2 * (prt.x - i) + prt.y - j
         walls.delete(diff)
+      } else {
+        walls.delete(-2)
       }
-      for (let k = 0; k !== maze[i][j].children.length; ++i) {
+      if (i === maze.length - 1 && j === maze.length - 1) {
+        walls.delete(1)
+      }
+      for (let k = 0; k !== maze[i][j].children.length; ++k) {
         let kid = maze[i][j].children[k]
-        let diff = kid.x - i + 2 * (kid.y - j)
+        let diff = 2 * (kid.x - i) + (kid.y - j)
         walls.delete(diff)
       }
-      console.log(walls)
-      // alert('wall')
       return walls
     }
 
@@ -172,5 +194,11 @@ export default {
 #h1 {
   color:#42b983;
   text-align:center;
+}
+#p {
+  text-align:left;
+}
+#input {
+  border:0.6rem, solid, #42b983;
 }
 </style>
