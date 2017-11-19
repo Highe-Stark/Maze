@@ -14,7 +14,7 @@ export default {
     cxt.strokeStyle = '#42b983'
     cxt.translate(0.5, 0.5)
     var l = 20
-    var size = 4
+    var size = 10
     var maze = genMaze(size)
     console.log(maze)
     drawMaze(maze, l)
