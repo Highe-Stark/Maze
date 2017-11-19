@@ -1,6 +1,13 @@
-# maze
+Web Maze
+========
 
-> Front-end homework - maze.
+ Author: Higher Stark
+
+ Front-end homework - maze.
+
+ Use HTML5 canvas to draw maze, with Vue and Bootstrap as framework.
+
+ Push "Refresh" button to generate a new maze.
 
 ## Build Setup
 
