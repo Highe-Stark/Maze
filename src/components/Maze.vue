@@ -1,6 +1,8 @@
 <template>
   <div id="maze">
-    <h1 class="text-primary">Hello</h1>
+    <h1 class="text-primary">Welcome to play maze</h1>
+    <button class="btn" v-on:click="reload">Refresh</button>
+    </br>
     <canvas class="canvas" id="mazeboard" height="500px" width="500px" style="border:2px solid #f0f0f0">Maze</canvas>
   </div>
 </template>
@@ -120,7 +122,7 @@ export default {
         walls.delete(diff)
       }
       console.log(walls)
-      alert('wall')
+      // alert('wall')
       return walls
     }
 
@@ -154,6 +156,11 @@ export default {
       }
       return neighborhood
     }
+  },
+  methods: {
+    reload: function () {
+      window.location.reload()
+    }
   }
 }
 </script>
@@ -161,5 +168,9 @@ export default {
 <style>
 #canvas {
   border: 2px, solid, #42b983;
+}
+#h1 {
+  color:#42b983;
+  text-align:center;
 }
 </style>
