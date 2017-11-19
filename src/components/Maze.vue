@@ -2,7 +2,7 @@
   <div id="maze">
     <h1 class="text-primary">{{msg}}</h1>
     <input id="mazeSize" class="form-control-plaintext" type="number" value=2>mazeSize</input>
-    <button type="submit" v-on:click="update" class="btn btn-primary">{{draw}}</button>
+    <!--<button type="submit" v-on:click="update" class="btn btn-primary">{{draw}}</button>-->
     <button class="btn btn-primary" v-on:click="reload">{{btn}}</button>
     </br>
     <canvas class="canvas" id="mazeboard" height="500px" width="500px" style="border:2px solid #42b983">Maze</canvas>
@@ -27,7 +27,7 @@ export default {
     cxt.strokeStyle = '#42b983'
     cxt.translate(0.5, 0.5)
     var l = 20
-    var size = document.getElementById('mazeSize').value
+    var size = 20
     var maze = genMaze(size)
 
     /* var routeStr = ''
